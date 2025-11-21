@@ -1,105 +1,117 @@
-﻿using shopList.Gui.Models;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using shopList.Gui.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
+//using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
+//using System.Windows.Input;
 
 namespace shopList.Gui.ViewModels
 {
-    public class ShopListViewModel:INotifyPropertyChanged
+    public partial class ShopListViewModels : ObservableObject
+
     {
-        private string nombredelarticulo = "matequilla";
-        private int _cantidadAcompra = 1;
+        [ObservableProperty]
+        private string _nombreDelArticulo = string.Empty;
+        [ObservableProperty]
+        private int _cantidadAComprar = 1;
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        //   public event PropertyChangedEventHandler? PropertyChanged;
 
-        public ObservableCollection<item> Items { get; }
-        public string NombreDelArticulo
+        public ObservableCollection<Item> Items { get; }
+
+        //public string NombreDelArticulo
+        //{
+        //    get => _nombreDelArticulo;
+        //    set
+        //    {
+        //        if (value != _nombreDelArticulo)
+        //        {
+        //            _nombreDelArticulo = value;
+        //            OnPropertyChanged(nameof(NombreDelArticulo));
+        //        }
+        //    }
+        //}
+        //public int CantidadAComprar
+        //{
+        //    get => _cantidadAComprar;
+        //    set
+        //    {
+        //        if (value != _cantidadAComprar)
+        //        {
+        //            _cantidadAComprar = value;
+        //            OnPropertyChanged(nameof(CantidadAComprar));
+        //        }
+        //    }
+        //}
+
+        //public ICommand AgregarShopListItemCommand {  get; private set; }
+
+
+        public ShopListViewModels()
         {
-            get => nombredelarticulo;
-            set
-            {
-                if(value != nombredelarticulo)
-                {
-                    nombredelarticulo=value;
-                    OnPropertyChanged(nameof(nombredelarticulo));
-                }
-            }
-
-        }
-        public int cantidadacomprar
-        {
-            get => cantidadacomprar;
-            set
-            {
-                if (value != cantidadacomprar)
-                {
-                    cantidadacomprar = value;
-                    OnPropertyChanged(nameof(cantidadacomprar));
-                }
-            }
-        }
-        public ICommand AgregarshoplistiteamCommand { get; private set; }
-        
-
-        public ShopListViewModel()
-        {
-            Items = new ObservableCollection<item>();
+            Items = new ObservableCollection<Item>();
             CargarDatos();
-            AgregarshoplistiteamCommand = new Command(Agregashoplistiteam);
+            // AgregarShopListItemCommand = new Command(AgregarShopListItem);
         }
-        public void Agregashoplistiteam()
+        [RelayCommand]
+        public void AgregarShopListItem()
         {
-            if (string.IsNullOrEmpty(nombredelarticulo) || cantidadacomprar >= 0)
+            if (string.IsNullOrEmpty(_nombreDelArticulo) || CantidadAComprar <= 0)
             {
                 return;
             }
-            Random generador= new Random();
-
-            var item = new item()
+            Random generador = new Random();
+            var item = new Item
             {
                 Id = generador.Next(),
                 Nombre = NombreDelArticulo,
-                Cantidad = cantidadacomprar,
-                comprado = false,
+                Cantidad = CantidadAComprar,
+                Comprado = false
             };
+            Items.Add(item);
+            NombreDelArticulo = string.Empty;
+            CantidadAComprar = 1;
         }
-
-        private void CargarDatos()
+        [RelayCommand]
+        public void EliminarShopListItem()
         {
 
-            Items.Add(new item()
+        }
+        private void CargarDatos()
+        {
+            Items.Add(new Item()
             {
                 Id = 1,
                 Nombre = "Leche",
                 Cantidad = 2,
-                comprado = false,
+                Comprado = false
             });
-
-            Items.Add(new item()
+            Items.Add(new Item()
             {
                 Id = 2,
-                Nombre = "Pan de caja",
+                Nombre = "Cereal de caja",
                 Cantidad = 1,
-                comprado = false,
-            });
+                Comprado = false
 
-            Items.Add(new item()
+            });
+            Items.Add(new Item()
             {
                 Id = 3,
-                Nombre = "Jamón",
+                Nombre = "Jamon",
                 Cantidad = 500,
-                comprado = false,
+                Comprado = true
+
             });
-            
         }
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        //private void OnPropertyChanged(string propertyName)
+        //{
+        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //}
     }
 }
+

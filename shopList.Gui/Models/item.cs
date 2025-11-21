@@ -6,16 +6,20 @@ using System.Threading.Tasks;
 
 namespace shopList.Gui.Models
 {
-    public class item
+    public class Item
     {
-        public int Id { get; set; }
-        public string Nombre { get; set; } = string.Empty;
-        public int Cantidad { get; set; }
-        public bool comprado { get; set; }
+        
+        
+            public int Id { get; set; }
+            public string Nombre { get; set; } = string.Empty;
+            public int Cantidad { get; set; }
+            public bool Comprado { get; set; }
 
-        public override string ToString()
-        {
-            return $"{this.Nombre} ({this.Cantidad})";
-        }
+            public override string ToString()
+
+            {
+                return $"{Nombre} ({Cantidad})";
+            }
+        
     }
 }
