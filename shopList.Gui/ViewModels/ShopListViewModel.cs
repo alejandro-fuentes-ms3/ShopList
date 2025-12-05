@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using shopList.Gui.Models;
+using shopList.Gui.Persistence;
+using shopList.Gui.Persistence.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,15 +18,19 @@ namespace shopList.Gui.ViewModels
 
     {
         [ObservableProperty]
-        private Item? itemSeleccionado;
+        private Item? itemSeleccionado = null;
         [ObservableProperty]
         private string _nombreDelArticulo = string.Empty;
         [ObservableProperty]
         private int _cantidadAComprar = 1;
+        [ObservableProperty]
+        private ObservableCollection<Item>? _items = null;
+        
+        private ShopListDatabase? _database =null;
 
         //   public event PropertyChangedEventHandler? PropertyChanged;
 
-        public ObservableCollection<Item> Items { get; }
+        
 
         //public string NombreDelArticulo
         //{
@@ -56,8 +62,10 @@ namespace shopList.Gui.ViewModels
 
         public ShopListViewModels()
         {
+            _database = new ShopListDatabase();
             Items = new ObservableCollection<Item>();
-            CargarDatos();
+            getItems();
+           // CargarDatos();
             // AgregarShopListItemCommand = new Command(AgregarShopListItem);
             if (Items.Count > 0)
             {
@@ -70,21 +78,23 @@ namespace shopList.Gui.ViewModels
 
         }
         [RelayCommand]
-        public void AgregarShopListItem()
+        public async Task AgregarShopListItem()
         {
             if (string.IsNullOrEmpty(_nombreDelArticulo) || CantidadAComprar <= 0)
             {
                 return;
             }
-            Random generador = new Random();
+            //Random generador = new Random();
             var item = new Item
             {
-                Id = generador.Next(),
+               // Id = generador.Next(),
                 Nombre = NombreDelArticulo,
                 Cantidad = CantidadAComprar,
                 Comprado = false
             };
-            Items.Add(item);
+            await _database.SaveItemAsync(item);
+            //Items.Add(item);
+            getItems();
             NombreDelArticulo = string.Empty;
             CantidadAComprar = 1;
             
@@ -119,6 +129,16 @@ namespace shopList.Gui.ViewModels
 
             //Si no hay nada q seleccionar
             ItemSeleccionado = nuevoSeleccionado;
+        }
+        private async void getItems()
+        {
+           IEnumerable<Item> Itemsfromdb = await _database.GetAllIteamAsync();
+            Items = new ObservableCollection<Item>(Itemsfromdb);
+            //foreach (Item item in Itemsfromdb)
+            //{
+            //    Items.Add(item);
+            //}
+
         }
         private void CargarDatos()
         {

@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using SQLite;
+using System.ComponentModel;
 namespace shopList.Gui.Models
 {
+    [Table("shoplist")]
     public class Item
     {
-        
-        
+        [PrimaryKey]
+        [AutoIncrement]
             public int Id { get; set; }
+        [NotNull]
             public string Nombre { get; set; } = string.Empty;
+        [DefaultValue(1)]
+        [NotNull]
             public int Cantidad { get; set; }
-            public bool Comprado { get; set; }
-
+        [NotNull]
+            public bool Comprado { get; set; } = false;
             public override string ToString()
 
             {
